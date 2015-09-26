@@ -1,0 +1,908 @@
+from cyclone_server import consts
+from twisted.internet import defer
+import calendar
+from md5 import md5
+
+
+class User(object):
+    def __init__(self, _db, _id, email, pwhash, display_name=None,
+                 user_name=None, user_guid=None, start_date=None,
+                 last_login=None, is_online=False):
+        self._db = _db
+        self._row_id = _id
+        self._email = email
+        self._pwhash = pwhash
+        self._display_name = display_name
+        self._user_name = user_name
+        self._user_guid = user_guid
+        self._start_date = start_date
+        self._last_login = last_login
+        self._is_online = is_online
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def email(self):
+        return self._email
+
+    @property
+    def user_name(self):
+        return self._user_name
+
+    @property
+    def pwhash(self):
+        return self._pwhash
+
+    @property
+    def display_name(self):
+        return self._display_name
+
+    @property
+    def user_guid(self):
+        return self._user_guid
+
+    @property
+    def is_online(self):
+        return self._is_online
+
+    @property
+    def gravatar_url(self):
+        _hex = md5(self.email).hexdigest()
+        return '//gravatar.com/avatar/' + _hex
+
+    @property
+    def start_date(self):
+        return self._start_date
+
+    @property
+    def last_login(self):
+        return self._last_login
+    
+    def __repr__(self):
+        return 'User<%s>' % self.email
+
+    def _serialize(self, ctx=None):
+        return {'id': self._id,
+                'email': self.email,
+                'user_name': self.user_name,
+                'display_name': self.display_name,
+                'user_guid': self.user_guid}
+
+    def get_device_tokens(self):
+        return self._db.all_device_tokens(self._id)
+
+    def __getstate__(self):
+        return dict((k, v) for (k, v) in self.__dict__.iteritems() if k != '_db')
+
+
+class Project(object):
+    def __init__(self, _db, _id, guid, owner_id, project_name,
+                 created_on=None, color=None, updated_on=None, isglobal=False):
+        self._db = _db
+        self._row_id = _id
+        self._guid = guid
+        self._owner_id = owner_id
+        self._project_name = project_name
+        self._created_on = created_on
+        self._color = color
+        self._updated_on = updated_on
+        self._isglobal = isglobal
+
+    @property
+    def isglobal(self):
+        return self._isglobal
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def guid(self):
+        return self._guid
+
+    @property
+    def owner_id(self):
+        return self._owner_id
+
+    @property
+    def project_name(self):
+        return self._project_name
+
+    @property
+    def created_on(self):
+        return self._created_on
+
+    @property
+    def color(self):
+        return self._color
+
+    @property
+    def updated_on(self):
+        return self._updated_on
+
+    def is_owner(self, user):
+        return self._owner_id == user._id
+
+    def __getstate__(self):
+        return dict((k, v) for (k, v) in self.__dict__.iteritems() if k != '_db')
+
+    @defer.inlineCallbacks
+    def _serialize(self, ctx=None):
+        owner = yield self._db.get_serialized_user_by_id(self._owner_id)
+        #owner = owner._serialize()
+        defer.returnValue({
+            'id':        self._id,
+            'guid':      self._guid,
+            'owner':     owner,
+            'project_name': self.project_name,
+            'created_on': calendar.timegm(self.created_on.timetuple()),
+            'updated_on': self._updated_on is not None and
+                          calendar.timegm(self._updated_on.timetuple())
+                          or None,
+            'color':      self._color if self._color else "#f48d66",
+            'isglobal': self.isglobal})
+
+
+class Document(object):
+    def __init__(self, _db, _id, _guid, _title, owner_id,
+             _deleted, _project_id, _doc_type, _thumbnails=None):
+        self._db = _db
+        self._row_id = _id
+        self._guid = _guid
+        self._title = _title
+        self._owner_id = owner_id
+        self._deleted = _deleted
+        self._project_id = _project_id
+        self._doc_type = _doc_type
+        self._thumbnails = _thumbnails
+        self._thumbnail = None
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def guid(self):
+        return self._guid
+
+    @property
+    def doc_type(self):
+        return self._doc_type
+
+    @property
+    def title(self):
+        return self._title
+
+    @property
+    def project_id(self):
+        return self._project_id
+
+    @property
+    def owner_id(self):
+        return self._owner_id
+
+    def thumbnail(self, ctx=None):
+        if not self._thumbnail and self._thumbnails:
+            self._thumbnail = self._thumbnails[0][1]
+        if not self._thumbnail:
+            if self.doc_type in ['png', 'jpg', 'jpeg', 'gif', 'bmp']:
+                self._thumbnail = ctx.static_url('icons/image-icon.png')
+            elif self.doc_type in ['htm', 'html']:
+                self._thumbnail = ctx.static_url('icons/html-icon.png')
+            else:
+                self._thumbnail = ctx.static_url('icons/pdf-icon.png')
+        return self._thumbnail
+
+    def get_versions(self):
+        return self._db.get_document_versions(self._row_id, getAll=True)
+
+    def get_latest_version(self):
+        return self._db.get_latest_document_version(self._row_id)
+
+    def add_version(self, guid, uploaded_by=None, upload_type='ios',
+                    source=None):
+        return self._db.add_document_version(
+            self._row_id, guid, uploaded_by, upload_type, source)
+
+    def is_collaborator(self, user):
+        return self.get_collaborators().addCallback(
+            lambda cl: user._id in [x._id for x in cl])
+
+    def is_owner(self, user):
+        return self._owner_id == user._id
+
+    def get_collaborators(self):
+        return self._db.get_document_collaborators(self._id)
+
+    @classmethod
+    def from_guid(cls, db, guid):
+        return db.get_document_from_guid(guid)
+
+    @classmethod
+    def from_id(cls, db, doc_id):
+        return db.get_document_from_id(doc_id)
+
+    @defer.inlineCallbacks
+    def _serialize(self, ctx=None):
+        versions = yield self.get_versions()
+        if versions:
+            sv = yield defer.DeferredList(
+                [x._serialize(ctx) for x in versions])
+            serialized_versions = [x[1] for x in sv]
+        else:
+            serialized_versions = []
+        if self._owner_id:
+            owner = yield self._db.get_serialized_user_by_id(
+                    self._owner_id)
+        else:
+            owner = None
+        project_obj = yield self._db.get_serialized_project_by_id(
+                self._project_id)
+        defer.returnValue({
+            'id':        self._id,
+            'guid':      self.guid,
+            'title':     self.title,
+            'owner':     owner,
+            'versions':  serialized_versions,
+            'mime_type': consts.REVERSE_MIMETYPE_MAP[self.doc_type],
+            'project':   project_obj,
+        })
+
+    @defer.inlineCallbacks
+    def _serializeIfUserPermitted(self, user, ctx=None):
+        versions = yield self.get_versions()
+        serialized_versions = None
+        if versions:
+            sv = yield defer.DeferredList(
+                [x._serializeIfUserPermitted(user, ctx) for x in versions])
+            serialized_versions = [x[1] for x in sv if x[1]]
+        if not serialized_versions:
+            defer.returnValue(None)
+        if self._owner_id:
+            owner = yield self._db.get_serialized_user_by_id(
+                    self._owner_id)
+        else:
+            owner = None
+        project_obj = yield self._db.get_serialized_project_by_id(
+                self._project_id)
+        defer.returnValue({
+            'id':        self._id,
+            'guid':      self.guid,
+            'title':     self.title,
+            'owner':     owner,
+            'versions':  serialized_versions,
+            'mime_type': consts.REVERSE_MIMETYPE_MAP[self.doc_type],
+            'project':   project_obj,
+        })
+
+    @defer.inlineCallbacks
+    def _serializeWithoutChild(self, ctx=None):
+        owner = yield self._db.get_serialized_user_by_id(self._owner_id)
+        project_obj = yield self._db.get_serialized_project_by_id(
+                self._project_id)
+        defer.returnValue({
+            'id':        self._id,
+            'guid':      self.guid,
+            'title':     self.title,
+            'owner':     owner,
+            'mime_type': consts.REVERSE_MIMETYPE_MAP[self.doc_type],
+            'project':   project_obj,
+        })
+
+    def _serializeOnlyDoc(self, ctx=None):
+        return {
+            'id':        self._id,
+            'guid':      self.guid,
+            'title':     self.title,
+            'mime_type': consts.REVERSE_MIMETYPE_MAP[self.doc_type]
+        }
+
+    @defer.inlineCallbacks
+    def _serializeOnlyDocWithCount(self, ctx=None):
+        #ann_count = yield self._db.get_doc_ann_count(self._id)
+        #c_count = yield self._db.get_doc_comment_count(self._id)
+        versions = yield self.get_versions()
+        doc_count = yield self._db.get_document_count_by_project_id(self._project_id)
+        noretries = 0
+        if versions[0].status == -1:
+            version_id = versions[0]._id
+            noretries = yield self._db.get_failed_doc_retry_count(version_id)
+        defer.returnValue({
+            'id':        self._id,
+            'guid':      self.guid,
+            'title':     self.title,
+            'mime_type': consts.REVERSE_MIMETYPE_MAP[self.doc_type],
+            'doc_count': doc_count,
+            'owner_id':  self._owner_id,
+            'status':    versions[0].status,
+            'noretries': str(noretries),
+            'uploaded_on':   versions[0].uploaded_on is not None and
+                calendar.timegm(versions[0].uploaded_on.timetuple())
+                or None,
+            'uploaded_on':   versions[0].uploaded_on is not None and
+                calendar.timegm(versions[0].uploaded_on.timetuple())
+                or None,
+            'thumbnail': self.thumbnail(ctx),
+        })
+
+
+SENTINEL = ()
+
+
+class DocumentVersion(object):
+    def __init__(self, _db, _id, _guid, _version, _file_hash, _document_id=SENTINEL,
+             _pages=SENTINEL, _title=SENTINEL, _author=SENTINEL,
+             _uploaded_by=SENTINEL, _uploaded_on=SENTINEL, _upload_type=SENTINEL,
+             _s3_bucket=SENTINEL, _s3_key=SENTINEL, _s3_url=SENTINEL,
+             _thumbnails=SENTINEL, _summary=SENTINEL, _source=SENTINEL,
+             _source_s3_key=SENTINEL, _status=SENTINEL, _updated_on=SENTINEL):
+        self._db = _db
+        self._row_id = _id
+        self._guid = _guid
+        self._version = _version
+        self._pages = _pages
+        self._title = _title
+        self._author = _author
+        self._uploaded_by = _uploaded_by
+        self._uploaded_on = _uploaded_on
+        self._upload_type = _upload_type
+        self._s3_bucket = _s3_bucket
+        self._s3_key = _s3_key
+        self._s3_url = _s3_url
+        self._file_hash = _file_hash
+        self._thumbnails = _thumbnails
+        self._document_id = _document_id
+        self._summary = _summary
+        self._source = _source
+        self._source_s3_key = _source_s3_key
+        self._status = _status
+        self._updated_on = _updated_on
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def guid(self):
+        return self._guid
+
+    @property
+    def file_hash(self):
+        return self._file_hash
+
+    @property
+    def version(self):
+        return self._version
+
+    def _get_prop(self, propname):
+        p = getattr(self, propname)
+        if p is SENTINEL:
+            return None
+        else:
+            return p
+
+    @property
+    def pages(self):
+        return self._get_prop('_pages')
+
+    @property
+    def title(self):
+        return self._get_prop('_title')
+
+    @property
+    def author(self):
+        return self._get_prop('_author')
+
+    @property
+    def uploaded_by(self):
+        return self._get_prop('_uploaded_by')
+
+    @property
+    def uploaded_on(self):
+        return self._get_prop('_uploaded_on')
+
+    @property
+    def upload_type(self):
+        return self._get_prop('_upload_type')
+
+    @property
+    def s3_bucket(self):
+        return self._get_prop('_s3_bucket')
+
+    @property
+    def s3_key(self):
+        return self._get_prop('_s3_key')
+
+    @property
+    def s3_url(self):
+        return self._get_prop('_s3_url')
+
+    @property
+    def thumbnails(self):
+        return self._get_prop('_thumbnails')
+
+    @property
+    def summary(self):
+        return self._get_prop('_summary')
+
+    @property
+    def source(self):
+        return self._get_prop('_source')
+
+    @property
+    def source_s3_key(self):
+        return self._get_prop('_source_s3_key')
+
+    @property
+    def status(self):
+        return self._get_prop('_status')
+
+    @property
+    def updated_on(self):
+        return self._get_prop('_updated_on')
+
+    @property
+    def document_id(self):
+        return self._get_prop('_document_id')
+
+    def get_collaborators(self):
+        return self._db.get_document_version_collaborators(self._id)
+
+    def is_collaborator(self, user):
+        return self.get_collaborators().addCallback(
+            lambda cl: user._id in [x._id for x in cl])
+
+    def is_owner(self, user):
+        return self._uploaded_by == user._id
+
+    def get_document(self):
+        return Document.from_id(self._db, self._document_id)
+
+    def get_document_content(self):
+        return self._db.get_document_content(self._id)
+
+    @classmethod
+    def from_guid(cls, db, guid):
+        return db.get_document_version_from_guid(guid)
+
+    @classmethod
+    def from_id(cls, db, dv_id):
+        return db.get_document_version_from_id(dv_id)
+
+    def add_annotation(self, guid, page, position=None, fragment=None,
+                       created_by=None, annotation_type=None):
+        if created_by is None:
+            created_by = self.uploaded_by
+        return self._db.add_annotation(
+            self._row_id, guid, page, position, fragment,
+            created_by, None, annotation_type)
+
+    def get_annotations(self):
+        return self._db.get_annotations_for_version(self._id)
+
+    @defer.inlineCallbacks
+    def _serialize(self, ctx=None):
+        if self.uploaded_by:
+            uploader = yield self._db.get_serialized_user_by_id(
+                    self.uploaded_by)
+        else:
+            uploader = None
+
+        #TODO: ideally source should be source_type and
+        #      source_meta should be source
+        #      In order to avoid breaking the UI, self.source is returned
+        #      as source_meta
+        source = 'html'
+        if not self.source:
+            source = yield self._db.get_source_type_by_version_id(
+                    self._id)
+            if not source:
+                source = 'web'
+        noretries = 0
+        if self.status == -1:
+            noretries = yield self._db.get_failed_doc_retry_count(self._id)
+        defer.returnValue({'guid': self.guid,
+                           'version': self.version,
+                           'pages': self.pages,
+                           'title': self.title,
+                           'uploaded_by': uploader,
+                           'uploaded_on': self.uploaded_on is not None and
+                           calendar.timegm(self.uploaded_on.timetuple())
+                           or None,
+                           'upload_type': self._upload_type,
+                           'file_hash': self.file_hash,
+                           'path': absolutize_link(ctx, self.s3_url),
+                           'summary': self.summary,
+                           'source': source,
+                           'noretries': str(noretries),
+                           'source_meta': self.source,
+                           'status': self.status,
+                           'updated_on': self.updated_on is not None and
+                                calendar.timegm(self.updated_on.timetuple())
+                                or None})
+
+    @defer.inlineCallbacks
+    def _serializeIfUserPermitted(self, user, ctx=None):
+        if self.uploaded_by:
+            uploader = yield self._db.get_serialized_user_by_id(
+                    self.uploaded_by)
+        else:
+            uploader = None
+        source = 'html'
+        if not self.source:
+            source = yield self._db.get_source_type_by_version_id(
+                    self._id)
+            if not source:
+                source = 'web'
+        noretries = 0
+        if self.status == -1:
+            noretries = yield self._db.get_failed_doc_retry_count(self._id)
+        defer.returnValue({'guid': self.guid,
+                           'version': self.version,
+                           'pages': self.pages,
+                           'title': self.title,
+                           'uploaded_by': uploader,
+                           'uploaded_on': self.uploaded_on is not None and
+                           calendar.timegm(self.uploaded_on.timetuple())
+                           or None,
+                           'upload_type': self._upload_type,
+                           'file_hash': self.file_hash,
+                           'path': absolutize_link(ctx, self.s3_url),
+                           'summary': self.summary,
+                           'source': source,
+                           'noretries': str(noretries),
+                           'source_meta': self.source,
+                           'status': self.status,
+                           'updated_on': self.updated_on is not None and
+                              calendar.timegm(self.updated_on.timetuple())
+                              or None})
+
+    @defer.inlineCallbacks
+    def _serializeWithoutChild(self, ctx=None):
+        owner = yield self._db.get_serialized_user_by_id(
+                self.uploaded_by)
+        source = 'html'
+        if not self.source:
+            source = yield self._db.get_source_type_by_version_id(
+                    self._id)
+            if not source:
+                source = 'web'
+        if self.status == -1:
+            noretries = yield self._db.get_failed_doc_retry_count(self._id)
+        defer.returnValue({'guid': self.guid,
+                           'version': self.version,
+                           'pages': self.pages,
+                           'title': self.title,
+                           'uploaded_by': owner,
+                           'uploaded_on': self.uploaded_on is not None and
+                           calendar.timegm(self.uploaded_on.timetuple())
+                           or None,
+                           'upload_type': self._upload_type,
+                           'file_hash': self.file_hash,
+                           'source': source,
+                           'noretries': str(noretries),
+                           'source_meta': self.source,
+                           'summary': self.summary,
+                           'status': self.status,
+                           'updated_on': self.updated_on is not None and
+                              calendar.timegm(self.updated_on.timetuple())
+                              or None})
+
+
+class DocumentsKeyword(object):
+    def __init__(self, _db, _versionGuid, _summary):
+        self._db = _db
+        self._versionGuid = _versionGuid
+        self._summary = _summary
+
+    @property
+    def DocKeywordObj(self):
+        return self._docKeywordObj
+
+    @property
+    def VersionGuid(self):
+        return self._versionGuid
+
+    @property
+    def Summary(self):
+        return self._summary
+
+    @defer.inlineCallbacks
+    def _serializeWithoutChild(self, ctx=None):
+        defer.returnValue({
+            'version_id': self.VersionGuid, 'summary': self.Summary,
+        })
+
+    @defer.inlineCallbacks
+    def _serialize(self, ctx=None):
+        doc_keywords = yield self._db.get_Doc_Keywords(self.VersionGuid)
+        doc_keywords = [x._serialize() for x in doc_keywords]
+        defer.returnValue({'version_id': self.VersionGuid,
+                           'summary': self.Summary,
+                           'keywords': doc_keywords})
+
+
+class DisqueryNote(object):
+    def __init__(self, _db, _id, guid, disquery_id, key, note_type,
+                 fragment, created_on, created_by):
+        self._db = _db
+        self._row_id = _id
+        self._guid = guid
+        self._disquery_id = disquery_id
+        self._key = key
+        self._note_type = note_type
+        self._fragment = fragment
+        self._created_on = created_on
+        self._created_by = created_by
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def guid(self):
+        return self._guid
+
+    @property
+    def disquery_id(self):
+        return self._disquery_id
+
+    @property
+    def key(self):
+        return self._key
+
+    @property
+    def note_type(self):
+        return self._note_type
+
+    @property
+    def fragment(self):
+        return self._fragment
+
+    @property
+    def created_on(self):
+        return self._created_on
+
+    @property
+    def created_by(self):
+        return self._created_by
+
+    @defer.inlineCallbacks
+    def _serialize(self):
+        created_by = yield self._db.get_serialized_user_by_id(
+            self._created_by)
+        defer.returnValue({
+                'guid': self._guid,
+                'key': self._key,
+                'note_type': self._note_type,
+                'fragment': self._fragment,
+                'created_on': calendar.timegm(self._created_on.timetuple()),
+                'created_by': created_by})
+
+
+class Disquery(object):
+    def __init__(self, _db, _id, guid, name, owner_id, location_count,
+                    person_count, organisation_count, document_count,
+                    keyword_count, created_on):
+
+        self._db = _db
+        self._row_id = _id
+        self._guid = guid
+        self._name = name
+        self._owner_id = owner_id
+        self._location_count = location_count
+        self._person_count = person_count
+        self._organisation_count = organisation_count
+        self._document_count = document_count
+        self._keyword_count = keyword_count
+        self._created_on = created_on
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def guid(self):
+        return self._guid
+
+    @property
+    def name(self):
+        return self._name
+
+    @property
+    def owner_id(self):
+        return self._owner_id
+
+    @property
+    def location_count(self):
+        return self._location_count
+
+    @property
+    def person_count(self):
+        return self._person_count
+
+    @property
+    def organisation_count(self):
+        return self._organisation_count
+
+    @property
+    def document_count(self):
+        return self._document_count
+
+    @property
+    def keyword_count(self):
+        return self._keyword_count
+
+    @property
+    def created_on(self):
+        return self._created_on
+
+    def _serialize(self):
+        return {
+                'id': self._id,
+                'guid': self._guid,
+                'name': self._name,
+                'owner_id': self._owner_id,
+                'location_count': self._location_count,
+                'person_count': self._person_count,
+                'organisation_count': self._organisation_count,
+                'document_count': self._document_count,
+                'keyword_count': self._keyword_count,
+                'created_on': calendar.timegm(self._created_on.timetuple())
+                }
+
+
+class DocumentSource(object):
+    def __init__(self, _db, _id=None, _guid=None,
+                 _person_id=None, _title=None, _source_type=None,
+                 _access_token=None, _access_token_secret=None,
+                 _user_id=None, _user_name=None, _email=None,
+                 _server=None, _port=None, _usessl=None,
+                 _password=None, _added_on=None, _updated_on=None,
+                 _folder_id=None, _data_id=None, _status='OK',  _ftpurl=None):
+        self._db = _db
+        self._row_id = _id
+        self._guid = _guid
+        self._person_id = _person_id
+        self._source_type = _source_type
+        self._title = _title
+        self._access_token = _access_token
+        self._access_token_secret = _access_token_secret
+        self._user_id = _user_id
+        self._user_name = _user_name
+        self._email = _email
+        self._server = _server
+        self._port = _port
+        self._usessl = _usessl
+        self._password = _password
+        self._added_on = _added_on
+        self._updated_on = _updated_on
+        self._folder_id = _folder_id
+        self._data_id = _data_id
+        self._status = _status
+        self._ftpurl = _ftpurl
+
+    @property
+    def ftpurl(self):
+        return self._ftpurl
+
+    @property
+    def _id(self):
+        return self._row_id
+
+    @property
+    def guid(self):
+        return self._guid
+
+    @property
+    def person_id(self):
+        return self._person_id
+
+    @property
+    def source_type(self):
+        return self._source_type
+
+    @property
+    def access_token(self):
+        return self._access_token
+
+    @property
+    def access_token_secret(self):
+        return self._access_token_secret
+
+    @property
+    def title(self):
+        return self._title
+
+    @property
+    def user_id(self):
+        return self._user_id
+
+    @property
+    def user_name(self):
+        return self._user_name
+
+    @property
+    def email(self):
+        return self._email
+
+    @property
+    def server(self):
+        return self._server
+
+    @property
+    def port(self):
+        return self._port
+
+    @property
+    def usessl(self):
+        return self._usessl
+
+    @property
+    def password(self):
+        return self._password
+
+    @property
+    def added_on(self):
+        return self._added_on
+
+    @property
+    def updated_on(self):
+        return self._updated_on
+
+    @property
+    def folder_id(self):
+        return self._folder_id
+
+    @property
+    def data_id(self):
+        return self._data_id
+
+    @property
+    def status(self):
+        return self._status
+
+    def set_status(self, s):
+        self._status = s
+
+    def set_access_token(self, token):
+        self._access_token = token
+
+    def set_access_token_secret(self, token):
+        self._access_token_secret = token
+
+    def add_document_source(self):
+        return self._db.add_document_source(self)
+
+    def get_doc_sources_by_user_id(self, user_id):
+        return self._db.get_document_sources_by_id(user_id)
+
+    def getData(self):
+        return self._db.get_document_source_data(self._data_id)
+
+    def addData(self, data):
+        return self._db.add_document_source_data(self.id, data)
+
+    def _serialize(self, ctx=None):
+        return {
+            'id': self._id,
+            'guid': self.guid,
+            'person_id': self.person_id,
+            'source_type': self.source_type,
+            'title': self.title,
+            'access_token': self.access_token,
+            'access_token_secret': self.access_token_secret,
+            'user_id': self.user_id,
+            'username': self.user_name,
+            'email': self.email,
+            'server': self.server,
+            'port': self.port,
+            'use_ssl': self.usessl,
+            'password': self.password,
+            'status': self.status,
+            'added_on': self.added_on is not None and
+            calendar.timegm(self.added_on.timetuple()) or None,
+            'updated_on': self.updated_on is not None and
+            calendar.timegm(self.updated_on.timetuple()) or None}
