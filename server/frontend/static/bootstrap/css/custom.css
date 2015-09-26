@@ -33,8 +33,8 @@ margin: 0 auto;
 text-align: center;
 font-size: 54px;
 color: #fff;
-margin-top: 150px;
-margin-bottom:30px;
+margin-top: 35px;
+margin-bottom:10px;
 font-weight: 100;
 font-family:'Open Sans', sans-serif;
 }
@@ -42,3 +42,30 @@ font-family:'Open Sans', sans-serif;
 .loading{
 display:none;
 }
+
+.qt_text{
+text-shadow: 0 0 6px rgb(0,0,0);
+width: auto;
+margin: 0 auto;
+text-align: center;
+font-size: 24px;
+color: #fff;
+margin-top: 0px;
+margin-bottom:15px;
+font-weight: 100;
+font-family:'Open Sans', sans-serif;
+}
+
+.or_text{
+text-shadow: 0 0 6px rgb(0,0,0);
+width: auto;
+margin: 0 auto;
+text-align: center;
+font-size: 34px;
+color: #fff;
+margin-top: 0px;
+margin-bottom:15px;
+font-weight: 100;
+font-family:'Open Sans', sans-serif;
+}
+
