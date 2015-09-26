@@ -9,13 +9,27 @@ from cyclone_server.db.mixin import DatabaseMixin
 from cyclone_server import config
 from twisted.internet import defer
 from image_processor import ImageProcessor
+from cyclone_server import httpclient
+
+path = config.CONFIG_FILE_PATH
+cfg = config.parse_config(path)
+app_token = cfg['app_token']
+oauth_token = cfg['oauth_token']
+
+
+api_url = cfg['api_url']
+
+headers = {"X-APP-Token": [app_token]}
+
+headersWithAuth = {"X-APP-Token": [app_token],
+                   "Authorization": ["Basic %s" % (oauth_token)]}
 
 
 class APIBase(BaseHandler, DatabaseMixin):
     no_xsrf = True
 
     def get_config(self):
-        path = config.config_file_path()
+        path = config.CONFIG_FILE_PATH
         settings = config.parse_config(path)
         return settings
 
@@ -46,3 +60,22 @@ class CamUploadHandler(APIBase):
                                 'text': image.text,
                                 'pan_no': image.pan_no
         })
+
+
+class FetchAvailableCabs(APIBase):
+    
+    @defer.inlineCallbacks
+    def get(self):
+        request_url = api_url + "/products"
+        pickup_lat = self.get_argument('pickup_lat')
+        pickup_lng = self.get_argument('pickup_lng')
+        request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
+        print request_url
+        response = yield httpclient.fetch(request_url,
+                       method='GET', headers=headers, postdata=None)
+        print response
+        jsondata = json.loads(response.body)
+        print jsondata
+        success = True
+        defer.returnValue(self.write_json({'success':success, "data":jsondata}))
+

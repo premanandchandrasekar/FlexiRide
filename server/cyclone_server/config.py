@@ -53,4 +53,8 @@ def parse_config(filename=None):
     else:
         settings["postgresql_settings"] = None
 
+    settings["api_url"] = cfg.get("auth_token", "api_url")
+    settings["app_token"] = cfg.get("auth_token", "app_token")
+    settings["oauth_token"] = cfg.get("auth_token", "oauth_token")
+
     return settings
