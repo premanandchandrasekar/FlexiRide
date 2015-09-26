@@ -8,6 +8,7 @@ from cyclone_server.utils import BaseHandler
 from cyclone_server.db.mixin import DatabaseMixin
 from cyclone_server import config
 from twisted.internet import defer
+from image_processor import ImageProcessor
 from cyclone_server import httpclient
 
 path = config.CONFIG_FILE_PATH
@@ -45,6 +46,21 @@ class DetailsHandler(APIBase):
 
     def get(self):
         return self.write_json({'success': True, 'data': response})
+
+
+class CamUploadHandler(APIBase):
+
+    def post(self):
+        datafile = self.request.files['webcam'][0]
+
+        image = ImageProcessor(datafile['body'])
+        image.process()
+        
+        return self.write_json({'success': True,
+                                'text': image.text,
+                                'pan_no': image.pan_no
+        })
+
 
 class FetchAvailableCabs(APIBase):
     

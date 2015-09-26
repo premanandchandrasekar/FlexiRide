@@ -13,3 +13,9 @@ class IndexHandler(BaseHandler, DatabaseMixin):
         #db = PostgresDatabase(self)
         #Merchant_lists = yield self.database.get_list_of_merchant()
         self.render("index.html")
+
+
+class SampleWebcamHandler(cyclone.web.RequestHandler):
+
+    def get(self):
+        self.render("webcam.html")
