@@ -47,7 +47,6 @@ class DetailsHandler(APIBase):
     def get(self):
         return self.write_json({'success': True, 'data': response})
 
-
 class CamUploadHandler(APIBase):
 
     def post(self):

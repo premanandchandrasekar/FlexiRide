@@ -32,6 +32,7 @@ class ImageProcessor(object):
     def process(self):
         img_file = Image.open(StringIO(self.data))
         text = image_to_string(img_file)
+        print text 
         result = self.getIDfromText(text)
         if result != "none":
             self._pan_no = result
