@@ -207,14 +207,9 @@ $('#confirm_ride').click(function(e){
 	    var params = {'destination': check_value}
 	    $.get(url, params).then(function(res){
         	    $(".loading").hide();
-			    if(res.data){
-				    data = res.data
-                                    console.log(data); 
-                                    var url = '/showconfirmation';
-	                            var params = {'destination': check_value}
-                                    $.get(url, params).then(function(res){
-                                    console.log("*********************")
-			            } 
+			    if(res.data && res.data.length != 0){
+                     window.open('/showconfirmation/' + res.data[0].crn, '_blank');
+			     } 
 	    });
 		                                 
     });

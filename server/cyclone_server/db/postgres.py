@@ -97,7 +97,7 @@ class PostgresDatabase(object):
 
     def get_booked_status_by_crn(self,crn):
         return self.connection.runQuery(
-            query._GET_BOOKED_DETAILS_BY_CRN, (story_guid,)).\
+            query._GET_BOOKED_DETAILS_BY_CRN, (crn,)).\
             addCallback(self._got_booked_details).\
             addErrback(self._db_error)
 

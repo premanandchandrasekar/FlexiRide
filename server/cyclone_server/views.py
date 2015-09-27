@@ -28,5 +28,5 @@ class ShowBookedCabsDetails(cyclone.web.RequestHandler):
 
 class ShowConfirmationHandler(cyclone.web.RequestHandler):
 
-    def get(self):
-        self.render("confirmation.html")
+    def get(self, crn_id):
+        self.render("confirmation.html",crn_id=crn_id)

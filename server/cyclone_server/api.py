@@ -146,7 +146,7 @@ class BookedCabsCrnHandler(APIBase):
         crn = self.get_argument('crn', None)
         booked_details_by_crn = yield self.database.get_booked_status_by_crn(crn)
         if booked_details_by_crn:
-            defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
+            defer.returnValue(self.write_json({'success': True, 'booked_detail': booked_details_by_crn}))
         defer.returnValue(self.write_json({'success': False}))
 
 
