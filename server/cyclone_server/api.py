@@ -79,7 +79,8 @@ class FetchAvailableCabs(APIBase):
         response = yield httpclient.fetch(request_url,
                        method='GET', headers=headers, postdata=None)
         print response
-        if response.code == '200':
+        print response.code
+        if response.code == 200:
             jsondata = json.loads(response.body)
             success = True
         else:
