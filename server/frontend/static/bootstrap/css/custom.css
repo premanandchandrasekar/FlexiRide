@@ -183,6 +183,7 @@ font-weight:600;
 color:#FFF;
 border-radius:3px;
 display: inline-block;
+cursor: pointer;
 }
 
 .footer{
