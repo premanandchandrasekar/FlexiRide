@@ -5,6 +5,7 @@ from twisted.internet import defer
 from cyclone_server import utils
 from cyclone_server.utils import BaseHandler
 from cyclone_server.db.mixin import DatabaseMixin
+from cyclone_server.api import CabBookingHandler
 
 class IndexHandler(BaseHandler, DatabaseMixin):
     is_index_handler = True

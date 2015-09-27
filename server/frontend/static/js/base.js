@@ -31,6 +31,19 @@ $(document).ready(function(){
         e.preventDefault();
     });
 
+    $("#search_button").click(function(e){
+        var mob_no = $("#search_key").val();
+        if((mob_no.length > 0) && (mob_no.length==10)){
+            $("#ps_container").hide();
+        } else if(mob_no.length > 0 && mob_no.length < 10){
+            $("#error_msg").text("Enter a valid 10 digit mobile number.").css('color', '#f9aa0b').show().fadeOut(2000);
+            return;
+        } else if(mob_no.length==0){
+            $("#ps_container").show();
+        }
+        $("html, body").animate({ scrollTop: $('#booking_header').offset().top }, 1000);
+    });
+
 });
 
 
