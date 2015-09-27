@@ -10,12 +10,15 @@ from cyclone_server import config
 from twisted.internet import defer
 from image_processor import ImageProcessor
 from cyclone_server import httpclient
+import redis
 
 path = config.CONFIG_FILE_PATH
 cfg = config.parse_config(path)
 app_token = cfg['app_token']
 oauth_token = cfg['oauth_token']
+REDIS_HOST = "localhost"
 
+redis_client = redis.Redis(host=REDIS_HOST)
 
 api_url = cfg['api_url']
 
@@ -112,9 +115,12 @@ class CabBookingHandler(APIBase):
             if response.code == '200':
                 jsondata = json.loads(response.body)
                 success = True
-                yield self.database.insert_into_bookedcabs(jsondata['driver_name'],
+                inserted_details = yield self.database.insert_into_bookedcabs(jsondata['driver_name'],
                     jsondata['cab_number'], jsondata['driver_number'], sharing,
                     1, estimated_amount, jsondata['eta'])
+                if inserted_details:
+                    json_response = json.dumps({'details':inserted_details , 'inserted': True})
+                    redis_client.publish('ridestream', json_response)
             else:
                 jsondata = []
                 success = False
@@ -133,3 +139,21 @@ class BookedCabsHandler(APIBase):
         print booked_cabs
         defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
 
+class LocalTest(APIBase):
+
+    @defer.inlineCallbacks
+    def get(self):
+        rr = {'id': 34,
+              'driver_name': 'fghgh',
+              'cab_number': 'jhhjhjhj',
+              'driver_mobile_number': 5555515445,
+              'sharing':False,
+              'device_id':99999,
+              'estimated_amount':5515,
+              'estimated_time':1,
+              'created_on':'row.created_on',
+              'crn':3699}
+        json_response = json.dumps({'details':rr , 'inserted': True})
+        booked_cabs = yield self.database.get_all_booked_cabs()
+        redis_client.publish('ridestream', json_response)
+        defer.returnValue(self.write_json({'success': True}))

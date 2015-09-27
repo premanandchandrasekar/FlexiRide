@@ -34,7 +34,7 @@ def getCabsStatus():
     threading.Timer(6.0,getCabsStatus).start()
     bookedcabs = database.get_all_cabsbooked()
     print bookedcabs
-    response = json.dumps({'bookedcabs_list':bookedcabs })
+    response = json.dumps({'bookedcabs_list':bookedcabs,'inserted':False })
     redis_client.publish(REDIS_CHAN,response)
     '''
     #redis_client.hincrby(HASH_NAME, 'org_count', 1)

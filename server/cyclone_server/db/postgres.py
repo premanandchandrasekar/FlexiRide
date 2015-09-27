@@ -13,23 +13,42 @@ class PostgresDatabase(object):
         self.connection = connection
         self.cache = cache
 
-    def insert_into_bookedcabs(self, driver_name, cab_number, driver_mobile_number,
-    			sharing, device_id, estimated_amount, estimated_time):
-
-        return self.connection.runInteraction(
-            query._INSERT_BOOKED_CAB,
-            (driver_name, cab_number, driver_mobile_number,
-                sharing, device_id, estimated_amount, estimated_time))
     
     def _db_error(self, err):
         print "DB ERROR : %s" % (err,)
         return None
 
+    def _got_booked_details(self, row):
+    	if row:
+    		row = row[0]
+    		details = {'id': row.id,
+                          'driver_name': row.driver_name,
+                          'cab_number': row.cab_number,
+                          'driver_mobile_number': row.driver_mobile_number,
+                          'sharing':row.sharing,
+                          'device_id':row.device_id,
+                          'estimated_amount':row.estimated_amount,
+                          'estimated_time':row.estimated_time,
+                          'created_on':row.created_on,
+                          'crn':row.crn}
+        return None
+
+
+    def insert_into_bookedcabs(self, driver_name, cab_number, driver_mobile_number,
+    			sharing, device_id, estimated_amount, estimated_time):
+
+        return self.connection.runOperation(
+            query._INSERT_BOOKED_CAB,
+            (driver_name, cab_number, driver_mobile_number,
+                sharing, device_id, estimated_amount, estimated_time)).\
+            addCallback(self._got_booked_details).\
+            addErrback(self._db_error)
+
     def _got_bookedcabs(self, rows):
-		bookes_cabs_list = []
+		booked_cabs_list = []
 		if rows:
 			for row in rows:
-				bookes_cabs_list.append({'id': row.id,
+				booked_cabs_list.append({'id': row.id,
                           'driver_name': row.driver_name,
                           'cab_number': row.cab_number,
                           'driver_mobile_number': row.driver_mobile_number,
@@ -39,7 +58,7 @@ class PostgresDatabase(object):
                           'estimated_time':row.estimated_time,
                           'created_on':row.created_on,
                           'crn':row.crn})
-		return bookes_cabs_list
+		return booked_cabs_list
 
     def get_all_booked_cabs(self):
     	return self.connection.runQuery(
