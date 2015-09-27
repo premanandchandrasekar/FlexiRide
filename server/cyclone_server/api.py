@@ -79,3 +79,11 @@ class FetchAvailableCabs(APIBase):
         success = True
         defer.returnValue(self.write_json({'success':success, "data":jsondata}))
 
+class BookedCabsHandler(APIBase):
+
+    @defer.inlineCallbacks
+    def get(self):
+        booked_cabs = yield self.database.get_all_booked_cabs()
+        print booked_cabs
+        defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
+
