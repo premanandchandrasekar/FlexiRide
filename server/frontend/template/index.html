@@ -37,30 +37,31 @@
                 <button id="search_button" style="height: 35px;margin-left: -5px;border-radius: 0 5px 5px 0;" class="btn btn-warning"><i class="icon-search" style="opacity:0.5;"></i> Go</button>
                 <img class="loading" src="/static/bootstrap/img/spinner-mini.gif" style="margin:auto;margin-top:80px;" />
                 <div class="loading" style="color: #FFF;text-shadow: 0 0 5px #000;font-size: 24px;font-weight: 100;text-align: center;">Processing...</div>
+                <p id="error_msg" style="display:inline;margin-left: 30%;padding-top:5px;padding-left:20px;"></p>
             </div>
         </div>
         <div style="clear:both;margin-top:100px;"></div>
-        <div style="font-size: 36px;font-weight: 100;text-align: center;">BOOK YOUR CAB</div>
+        <div id="booking_header" style="font-size: 36px;font-weight: 100;text-align: center;">BOOK YOUR CAB</div>
         <div class="row" style="margin-top:50px;margin-bottom:100px;">
-            <div class="col-md-12">
+            <div class="col-md-12" id="ps_container">
                 <div style="margin-left:30%">
-                    <p style="font-size:18px;line-height:18px;">Select pick-up spot around majestic.</p>
+                    <p style="font-size:18px;line-height:18px;">Pick-up spots at - Sony World, 100 Feet Road, Koramangala.</p>
                     <ul class="pickup-spots">
-                        <li style="margin-left:0;">
+                        <li style="margin-left:0;" id="pickup_spot" data-lat="12.93707" data-long="77.62660499999993">
                             <input type="radio" id="spot1" name="pickup_spot" value="North Gate" />
-                            <label for="spot1">North Gate</label>
+                            <label for="spot1">Wild craft</label>
                         </li>
                         <li>
                             <input type="radio" id="spot2" name="pickup_spot" value="South Gate" />
-                            <label for="spot2">South Gate</label>
+                            <label for="spot2">Oasis</label>
                         </li>
                         <li>
                             <input type="radio" id="spot3" name="pickup_spot" value="East Gate" />
-                            <label for="spot3">East Gate</label>
+                            <label for="spot3">Taco Bells</label>
                         </li>
                         <li>
                             <input type="radio" id="spot4" name="pickup_spot" value="West Gate" />
-                            <label for="spot4">West Gate</label>
+                            <label for="spot4">New Fonotech</label>
                         </li>
                     </ul>
                 </div>
@@ -130,7 +131,7 @@
     <script src="/static/js/pages/index.js"></script>
     <script src="/static/js/jquery.tmpl.min.js"></script>
     <script src="/static/js/moment.js"></script>
-    <script src="/static/js/custom.js"></script>
+    <!--script src="/static/js/custom.js"></script-->
     <script src="/static/webcam.js"></script>
     <script src="/static/sample_cam.js"></script>
     <script src="/static/js/base.js"></script>
