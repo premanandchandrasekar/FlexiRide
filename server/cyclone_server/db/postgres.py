@@ -63,6 +63,35 @@ class PostgresDatabase(object):
     		addCallback(self._got_bookedcabs).\
     		addErrback(self._db_error)
 
+
+    def insert_into_userdetails(self, booking_id, user_mobile_number, pickup_location,
+                destination, estimated_amount):
+        return self.connection.runInteraction(
+        	query._INSERT_INTO_USER_DETAILS, (booking_id, user_mobile_number,
+        		pickup_location, destination, estimated_amount))
+
+    def fetch_bookedcabs_by_id(self, booking_id):
+    	return self.connection.runQuery(
+    		query._FETCH_BOOKED_CABS_BY_ID, (booking_id)).\
+    		addCallback(self.__got_booked_details).\
+    		addErrback(self._db_error)
+
+    def __got_booked_details(self, rows):
+    	l = []
+    	if rows:
+    		for row in rows:
+    			l.append({'id': row.id,
+                          'driver_name': row.driver_name,
+                          'cab_number': row.cab_number,
+                          'driver_mobile_number': row.driver_mobile_number,
+                          'sharing':row.sharing,
+                          'device_id':row.device_id,
+                          'estimated_amount':row.estimated_amount,
+                          'estimated_time':row.estimated_time,
+                          'created_on':row.created_on,
+                          'crn':row.crn})
+    	return l
+
     
 
                 
