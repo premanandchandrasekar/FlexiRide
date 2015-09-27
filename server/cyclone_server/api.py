@@ -55,6 +55,7 @@ class CamUploadHandler(APIBase):
         image = ImageProcessor(datafile['body'])
         image.process()
         
+        
         return self.write_json({'success': True,
                                 'text': image.text,
                                 'pan_no': image.pan_no
