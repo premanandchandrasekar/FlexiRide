@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>FlexiRide</title>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/style.min.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/retina.min.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/custom_dashboard.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/dashboard.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/custom.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col-md-12" style="margin-top:0px;">
+		<div class="intro_text">FlexiRide</div>
+		<div class="or_text">Select any one option from given choice</div>
+                <div class="qt_text">Show your "PAN CARD"</div>
+
+                <div id="idcard" style="font-size:20px;font-weight:800;font-color:green;padding:10px;height:50px;"></div>
+                <!-- div id="webcam" style="margin:0 auto;height:200px;width:500px;background-color:#fff;margin-bottom: 15px;"></div -->
+
+                <div class="or_text">OR</div>
+		<div class="qt_text">Enter Mobile number</div>
+                <input class="search_textbox" type="text" id="search_key" style="width: 39%;margin-left: 30%;border-radius: 5px 0 0 5px;"/>
+                <button id="search_button" style="height: 35px;margin-left: -5px;border-radius: 0 5px 5px 0;" class="btn btn-warning"><i class="icon-search" style="opacity:0.5;"></i> Go</button>
+                <img class="loading" src="/static/bootstrap/img/spinner-mini.gif" style="margin:auto;margin-top:80px;" />
+                <div class="loading" style="color: #FFF;text-shadow: 0 0 5px #000;font-size: 24px;font-weight: 100;text-align: center;">Processing...</div>
+            </div>
+        </div>
+
+    </div>
+
+
+    
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="/static/js/jquery-1.8.3.js"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="/static/js/jquery.sparkline.min.js"></script>
+    <script src="/static/js/retina.min.js"></script>
+    <script src="/static/js/custom.min.js"></script>
+    <script src="/static/js/core.min.js"></script>
+    <script src="/static/js/jquery.flot.min.js"></script>
+    <script src="/static/js/jquery.flot.pie.min.js"></script>
+    <script src="/static/js/d3.min.js"></script>
+    <script src="/static/js/xcharts.min.js"></script>
+    <script src="/static/js/pages/index.js"></script>
+    <script src="/static/js/jquery.tmpl.min.js"></script>
+    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/custom.js"></script>
+    <script src="/static/js/base.js"></script>
+    <script src="/static/webcam.js"></script>
+    <script src="/static/sample_cam.js"></script>
+
+
+
+
+</body>
+ 
+</html>

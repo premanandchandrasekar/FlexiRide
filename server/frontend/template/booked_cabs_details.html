@@ -25,15 +25,39 @@
           <div class="col-sm-6 news_streamview">
             <div class="view_header">
               <div class="listview-header widget_title">Pending</div>
-            <div class="streamview_content" id="streamview_content">                      
-            </div>
+              <div class="table">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Driver Name</th>
+                        <th>Cab Number</th>
+                        <th>Driver Mobile Num</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="pending_details">
+                    </tbody>
+                  </table>
+              </div>
           </div>
           </div>
           <div class="col-sm-6 dashboard_view">
             <div class="view_header">
               <div class="listview-header widget_title">Pending</div>
-            <div class="streamview_content" id="streamview_content">                      
-            </div>
+                <div class="table">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Driver Name</th>
+                        <th>Cab Number</th>
+                        <th>Driver Mobile Num</th>
+                        <th>Time</th>
+                      </tr>
+                    </thead>
+                    <tbody id="complated_details">
+
+                    </tbody>
+                  </table>
           </div>
           </div>          
         </div>
@@ -48,10 +72,19 @@
     <script src="/static/js/jquery-migrate-1.2.1.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="/static/js/jquery.tmpl.min.js"></script>
-    <script src="/static/js/moment.js"></script>
+    <script src="/static/js/moment.js"></script>    
+    <script src="/static/js/sockjs.min.js"></script>
     <script src="/static/js/booked_cabs_details.js"></script>
 
 
 </body>
- 
+<script id="pending_details_template" type="text/template">
+    <tr>
+        <td><%-driver_name%></td>
+        <td><%-cab_number%></td>
+        <td><%-driver_number%></td>
+        <td id="<%-crn_id%>"><%-estimated_time%></td>
+        <td style="display:none" id="<%-crn%>"><%-estimated_time%></td>
+      </tr>
+</script>
 </html>

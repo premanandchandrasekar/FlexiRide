@@ -205,7 +205,7 @@ background:#000;
   position: relative;
   margin-top: 5px;
   height: 38px;
-  background: #486082;
+  background: #f9aa0b;
   border: 1px solid #C7CFDC;
   border-bottom:2px solid #C7CFDC;
   border-top-left-radius: 7px;
@@ -239,4 +239,29 @@ background:#000;
 .dashboard_view{
   padding-left: 5px;
   padding-right: 2px;
+}
+
+.lf_text{
+    /* text-shadow: 0 0 6px rgb(0,0,0); */
+    /* width: auto; */
+    margin: 20px;
+
+    font-size: 24px;
+    color: #000;
+    margin-top: 10px;
+    /* margin-bottom: 15px; */
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.rf_text{
+    /* text-shadow: 0 0 6px rgb(0,0,0); */
+    /* width: auto; */
+    margin: 20px;
+    font-size: 24px;
+    color: #050;
+    margin-top: 10px;
+    /* margin-bottom: 15px; */
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
 }
