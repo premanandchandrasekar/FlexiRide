@@ -14,8 +14,8 @@ function take_snapshot() {
     Webcam.upload(data_uri, "api/latest/camupload", function(code, res) {
         res = JSON.parse(res);
         $("#textcam").html(res.text);
-        if(res.id != "none"){
-            $("#idcard").html(res.id);
+        if(res.pan_no != "none"){
+            $("#idcard").html(res.pan_no);
         }
         flag = true;
     } );
