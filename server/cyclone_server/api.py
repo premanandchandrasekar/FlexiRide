@@ -103,7 +103,7 @@ class CabBookingHandler(APIBase):
         share_with = self.get_argument('share_with', None)
         pickup_location = self.get_argument('pickup_location', None)
         destination = self.get_argument('destination', None)
-        estimated_amount = self.get_argument('estimated_amount', None)
+        estimated_amount = self.get_argument('estimated_amount', 200)
         share_estimated_amount = self.get_argument('share_estimated_amount', estimated_amount)        
         if not share_with:
             if pickup_lat and pickup_lng:

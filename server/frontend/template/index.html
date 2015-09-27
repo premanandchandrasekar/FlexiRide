@@ -91,6 +91,7 @@
                             <table class="table table-hover">
                               <tbody id="cabDetailsTableMini">
                                 <tr>
+                                    <td>Select Car</td>
                                     <td style="width:30px;">
                                         Distance To Arrive
                                     </td>
@@ -115,6 +116,7 @@
                             <table class="table table-hover">
                               <tbody id="cabDetailsTableSedan">
                                 <tr>
+                                    <td>Select Car</td>
                                     <td style="width:30px;">
                                         Distance To Arrive
                                     </td>
@@ -209,6 +211,7 @@
     <%for(var i=0;i<cabDetails.categories.length; i++) {{'{'}} var d=cabDetails;%> 
       <% if(d['categories'][i]['display_name'] == filter){{'{'}}%>
         <tr>
+            <td class=".selectedCar"><input type="radio" name="<%-d['categories'][i]['id']%>" value="<%-d['categories'][i]['id']%>"></td>
             <td style="width:30px;">
                 <% if(d['categories'][i]['distance'] == -1){{'{'}}%>2<%} else {{'{'}}%><%-d['categories'][i]['distance']%> Kilometers<%}%>
             </td>
