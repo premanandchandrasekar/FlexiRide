@@ -47,19 +47,19 @@
                     <p style="font-size:18px;line-height:18px;">Select pick-up spot around majestic.</p>
                     <ul class="pickup-spots">
                         <li style="margin-left:0;">
-                            <input type="radio" id="spot1" name="pickup_spot" value="North Gate" />
+                            <input type="radio" id="spot1" class="pickup_spot" value="North Gate" />
                             <label for="spot1">North Gate</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot2" name="pickup_spot" value="South Gate" />
+                            <input type="radio" id="spot2" class="pickup_spot" value="South Gate" />
                             <label for="spot2">South Gate</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot3" name="pickup_spot" value="East Gate" />
+                            <input type="radio" id="spot3" class="pickup_spot" value="East Gate" />
                             <label for="spot3">East Gate</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot4" name="pickup_spot" value="West Gate" />
+                            <input type="radio" id="spot4" class="pickup_spot" value="West Gate" />
                             <label for="spot4">West Gate</label>
                         </li>
                     </ul>
@@ -192,6 +192,29 @@
     </div>
 </div>
 <% } %>
+</script>
+
+<script>
+$('#confirm_ride').click(function(e){
+	    e.preventDefault();
+	    $(".loading").css("display", "block");
+            var check_value = $('.pickup_spot:checked').val();
+            console.log(check_value);
+	    var url = '/api/latest/cab/booking';
+	    var params = {'destination': check_value}
+	    $.get(url, params).then(function(res){
+        	    $(".loading").hide();
+			    if(res.data){
+				    data = res.data
+                                    console.log(data); 
+                                    var url = '/showconfirmation';
+	                            var params = {'destination': check_value}
+                                    $.get(url, params).then(function(res){
+                                    console.log("*********************")
+			            } 
+	    });
+		                                 
+    });
 </script>
 
 </body>
