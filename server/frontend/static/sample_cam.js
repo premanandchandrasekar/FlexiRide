@@ -15,7 +15,8 @@ function take_snapshot() {
         res = JSON.parse(res);
         $("#textcam").html(res.text);
         if(res.pan_no != "none"){
-            $("#idcard").html(res.pan_no);
+            $("#idcard").val(res.pan_no);
+            $("#webcam").hide();
         }
         flag = true;
     } );

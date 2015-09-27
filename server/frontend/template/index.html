@@ -28,12 +28,16 @@
 		<div class="or_text">Select any one option from given choice</div>
                 <div class="qt_text">Show your "PAN CARD"</div>
 
-                <div id="idcard" style="font-size:20px;font-weight:800;font-color:green;padding:10px;height:50px;"></div>
-                <!-- div id="webcam" style="margin:0 auto;height:200px;width:500px;background-color:#fff;margin-bottom: 15px;"></div -->
-
+                <!--div id="idcard" style="font-size:20px;font-weight:800;font-color:green;padding:10px;height:50px;"></div-->
+                <div id="webcam" style="margin:0 auto;height:200px;width:500px;background-color:#fff;margin-bottom: 15px;"></div>
+                <div class="col-md-12 pan-text-container">
+                    <input class="search_textbox" type="text" id="idcard" placeholder="Enter Pan Number" style="width: 39%;margin-left: 30%;"/>
+                    <button id="pan_go" style="height: 35px;margin-left: -5px;border-radius: 0 5px 5px 0;" class="btn btn-warning"><i class="icon-search" style="opacity:0.5;"></i> Go</button>
+                </div>
+                <p id="pan_error_msg" style="display:inline;margin-left: 30%;padding-top:5px;padding-left:20px;"></p>
                 <div class="or_text">OR</div>
-		<div class="qt_text">Enter Mobile number</div>
-                <input class="search_textbox" type="text" id="search_key" style="width: 39%;margin-left: 30%;"/>
+		<div class="qt_text">Enter Mobile Number</div>
+                <input class="search_textbox" type="text" id="search_key" placeholder="Enter Mobile Number" style="width: 39%;margin-left: 30%;"/>
                 <button id="search_button" style="height: 35px;margin-left: -5px;border-radius: 0 5px 5px 0;" class="btn btn-warning"><i class="icon-search" style="opacity:0.5;"></i> Go</button>
                 <img class="loading" src="/static/bootstrap/img/spinner-mini.gif" style="margin:auto;margin-top:80px;" />
                 <div class="loading" style="color: #FFF;text-shadow: 0 0 5px #000;font-size: 24px;font-weight: 100;text-align: center;">Processing...</div>
@@ -69,7 +73,7 @@
             </div>
 
             <div class="col-md-12" style="margin-top:30px;">
-                <input class="destination" type="text" id="destination" placeholder="Pick a  destination...." style="margin-left: 30%;"/>
+                <input class="destination" type="text" id="destination" placeholder="Pick a destination...." style="margin-left: 30%;"/>
             </div>
             
             <div class="col-md-12" style="margin-top:50px;">
@@ -129,7 +133,7 @@
     <script src="/static/js/jquery.tmpl.min.js"></script>
     <script src="/static/js/moment.js"></script>
     <!--script src="/static/js/custom.js"></script-->
-    <!--<script src="/static/webcam.js"></script>-->
+    <script src="/static/webcam.js"></script>
     <script src="/static/sample_cam.js"></script>
     <script src="/static/js/base.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCbQiBA6R8To3G1oPtLkuufK5_pXAUtU-4&signed_in=true&libraries=places&callback=initAutocomplete" async defer></script>

@@ -44,6 +44,19 @@ $(document).ready(function(){
         $("html, body").animate({ scrollTop: $('#booking_header').offset().top }, 1000);
     });
 
+    $("#pan_go").click(function(e){
+        var pan_no = $("#idcard").val();
+        if(pan_no.length > 0){
+            $("#search_key").hide();
+            $("#search_button").hide();
+            $(".or_text").hide();
+            $(".qt_text").hide();
+        } else if(pan_no.length == 0){
+            $("#pan_error_msg").text("Enter a valid pan number number.").css('color', '#f9aa0b').show().fadeOut(2000);
+            return;
+        }
+        $("html, body").animate({ scrollTop: $('#booking_header').offset().top }, 1000);
+    });
 });
 
 
