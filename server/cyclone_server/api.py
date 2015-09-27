@@ -75,7 +75,7 @@ class FetchAvailableCabs(APIBase):
             request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
         print request_url
         if drop_lat and drop_lng:
-            request_url += '?drop_lat=' + drop_lat + '&drop_lng=' + drop_lng
+            request_url += '&drop_lat=' + drop_lat + '&drop_lng=' + drop_lng
         response = yield httpclient.fetch(request_url,
                        method='GET', headers=headers, postdata=None)
         print response

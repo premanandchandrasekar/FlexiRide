@@ -81,11 +81,51 @@
                  
                     <div class="tab-content">
                         <div id="Mini" class="tab active">
-                            <p>No Cabs Available in this Category.</p>
+                            <table class="table table-hover">
+                              <tbody id="cabDetailsTableMini">
+                                <tr>
+                                    <td style="width:30px;">
+                                        Distance To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Time To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Amount
+                                    </td>
+                                    <td>
+                                        Total Travel Distance
+                                    </td>
+                                    <td>
+                                        Total Travel Time
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
                         </div>
                  
                         <div id="Sedan" class="tab">
-                            <p>No Cabs Available in this Category.</p>
+                            <table class="table table-hover">
+                              <tbody id="cabDetailsTableSedan">
+                                <tr>
+                                    <td style="width:30px;">
+                                        Distance To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Time To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Amount
+                                    </td>
+                                    <td>
+                                        Total Travel Distance
+                                    </td>
+                                    <td>
+                                        Total Travel Time
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
                         </div>
                  
                         <div id="Prime" class="tab">
@@ -156,6 +196,30 @@
 	    <div class="posBar" style="width:<%-occPer%>%;"></div>
 	</td>
 </tr>
+</script>
+
+<script type="text/template" id="cabDetails">
+    <%for(var i=0;i<cabDetails.categories.length; i++) {{'{'}} var d=cabDetails;%> 
+      <% if(d['categories'][i]['display_name'] == filter){{'{'}}%>
+        <tr>
+            <td style="width:30px;">
+                <% if(d['categories'][i]['distance'] == -1){{'{'}}%>2<%} else {{'{'}}%><%-d['categories'][i]['distance']%> Kilometers<%}%>
+            </td>
+            <td>
+              <% if(d['categories'][i]['eta'] == -1){{'{'}}%>2<%} else {{'{'}}%><%-d['categories'][i]['eta']%> Minute(s)<%}%>
+            </td>
+            <td>
+                <%-d['ride_estimate'][i]['amount_max']%> Rupees
+            </td>
+            <td>
+                <%-d['ride_estimate'][i]['distance']%> Kilometers
+            </td>
+            <td>
+                <%-d['ride_estimate'][i]['travel_time_in_minutes']%> Minute(s)
+            </td>
+        </tr>
+      <% } %>
+    <% } %>
 </script>
 
 <script type="text/template" id="viewItem8">
