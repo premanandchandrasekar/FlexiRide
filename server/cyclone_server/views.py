@@ -19,3 +19,18 @@ class SampleWebcamHandler(cyclone.web.RequestHandler):
 
     def get(self):
         self.render("webcam.html")
+
+class ShowBookedCabsDetails(cyclone.web.RequestHandler):
+
+    def get(self):
+        self.render("booked_cabs_details.html")
+
+class SampleLocationHandler(cyclone.web.RequestHandler):
+
+    def get(self):
+        self.render("dropdown.html")
+
+class ShowConfirmationHandler(cyclone.web.RequestHandler):
+
+    def get(self):
+        self.render("confirmation.html")

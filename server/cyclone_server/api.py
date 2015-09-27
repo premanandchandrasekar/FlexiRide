@@ -47,7 +47,6 @@ class DetailsHandler(APIBase):
     def get(self):
         return self.write_json({'success': True, 'data': response})
 
-
 class CamUploadHandler(APIBase):
 
     def post(self):
@@ -68,15 +67,59 @@ class FetchAvailableCabs(APIBase):
     @defer.inlineCallbacks
     def get(self):
         request_url = api_url + "/products"
-        pickup_lat = self.get_argument('pickup_lat')
-        pickup_lng = self.get_argument('pickup_lng')
-        request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
+        pickup_lat = self.get_argument('pickup_lat', None)
+        pickup_lng = self.get_argument('pickup_lng', None)
+        drop_lat = self.get_argument("drop_lat", None)
+        drop_lng = self.get_argument("drop_lng", None)
+        if pickup_lat and pickup_lng:
+            request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
         print request_url
+        if drop_lat and drop_lng:
+            request_url += '?drop_lat=' + drop_lat + '&drop_lng=' + drop_lng
         response = yield httpclient.fetch(request_url,
                        method='GET', headers=headers, postdata=None)
         print response
-        jsondata = json.loads(response.body)
-        print jsondata
-        success = True
+        if response.code == '200':
+            jsondata = json.loads(response.body)
+            success = True
+        else:
+            jsondata = []
+            success = False
         defer.returnValue(self.write_json({'success':success, "data":jsondata}))
+
+class CabBookingHandler(APIBase):
+
+    @defer.inlineCallbacks
+    def get(self):
+        request_url = api_url + "/bookings/create"
+        pickup_lat = self.get_argument('pickup_lat', None)
+        pickup_lng = self.get_argument('pickup_lng', None)
+        mob_no_or_pan_no = self.get_argument("user_id")
+        sharing = self.get_argument("sharing", False)
+        estimated_amount = self.get_argument('estimated_amount')
+        if pickup_lat and pickup_lng:
+            request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
+        request_url += '&pickup_mode=' + NOW
+        response = yield httpclient.fetch(request_url,
+                       method='GET', headers=headersWithAuth, postdata=None)
+        print response
+        if response.code == '200':
+            jsondata = json.loads(response.body)
+            jsondata['user_id'] = user_id
+            success = True
+            yield self.database.insert_into_bookedcabs(jsondata['driver_name'],
+                jsondata['cab_number'], jsondata['driver_number'], sharing,
+                1, estimated_amount, jsondata['eta'])
+        else:
+            jsondata = []
+            success = False
+        defer.returnValue(self.write_json({'success':success, "data":jsondata}))
+
+class BookedCabsHandler(APIBase):
+
+    @defer.inlineCallbacks
+    def get(self):
+        booked_cabs = yield self.database.get_all_booked_cabs()
+        print booked_cabs
+        defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
 
