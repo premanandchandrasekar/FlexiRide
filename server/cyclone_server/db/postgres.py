@@ -18,23 +18,7 @@ class PostgresDatabase(object):
         return None
 
     def _got_bookedcabs(self, rows):
-		bookes_cabs_list = [{'id': 1,
-                          'driver_name': 'asdas',
-                          'cab_number': 'sfs 33 dgdf3 ',
-                          'driver_mobile_number': 5555454,
-                          'sharing':False,
-                          'device_id':1,
-                          'estimated_amount':250,
-                          'estimated_time':2,
-                          'created_on':'55'},{'id': 2,
-                          'driver_name': 'asdas',
-                          'cab_number': 'sfs 33 dgdf3 ',
-                          'driver_mobile_number': 5555454,
-                          'sharing':False,
-                          'device_id':1,
-                          'estimated_amount':250,
-                          'estimated_time':4,
-                          'created_on':'55'}]
+		bookes_cabs_list = []
 		if rows:
 			for row in rows:
 				bookes_cabs_list.append({'id': row.id,
