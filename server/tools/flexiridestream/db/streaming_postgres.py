@@ -116,4 +116,4 @@ class database:
                           'created_on':row.created_on,
                           'crn':row.crn})
             return subscriber_data
-        return bookes_cabs_list
+        return None

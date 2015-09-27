@@ -37,30 +37,33 @@
                 <button id="search_button" style="height: 35px;margin-left: -5px;border-radius: 0 5px 5px 0;" class="btn btn-warning"><i class="icon-search" style="opacity:0.5;"></i> Go</button>
                 <img class="loading" src="/static/bootstrap/img/spinner-mini.gif" style="margin:auto;margin-top:80px;" />
                 <div class="loading" style="color: #FFF;text-shadow: 0 0 5px #000;font-size: 24px;font-weight: 100;text-align: center;">Processing...</div>
+                <p id="error_msg" style="display:inline;margin-left: 30%;padding-top:5px;padding-left:20px;"></p>
             </div>
         </div>
         <div style="clear:both;margin-top:100px;"></div>
-        <div style="font-size: 36px;font-weight: 100;text-align: center;">BOOK YOUR CAB</div>
+        <div id="booking_header" style="font-size: 36px;font-weight: 100;text-align: center;">BOOK YOUR CAB</div>
         <div class="row" style="margin-top:50px;margin-bottom:100px;">
-            <div class="col-md-12">
+            <div class="col-md-12" id="ps_container">
                 <div style="margin-left:30%">
-                    <p style="font-size:18px;line-height:18px;">Select pick-up spot around majestic.</p>
+                    <p style="font-size:18px;line-height:18px;">Pick-up spots at - Majestic railway station</p>
                     <ul class="pickup-spots">
+
                         <li style="margin-left:0;">
-                            <input type="radio" id="spot1" name="pickup_spot" value="North Gate" />
-                            <label for="spot1">North Gate</label>
+                            <input type="radio" id="spot1" class="pickup_spot" value="SBI Atm" />
+                            <label for="spot1">SBI Atm </label>
                         </li>
                         <li>
-                            <input type="radio" id="spot2" name="pickup_spot" value="South Gate" />
-                            <label for="spot2">South Gate</label>
+                            <input type="radio" id="spot2" class="pickup_spot" value="Two wheeler parking area" />
+                            <label for="spot2">Two wheeler parking area</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot3" name="pickup_spot" value="East Gate" />
-                            <label for="spot3">East Gate</label>
+                            <input type="radio" id="spot3" class="pickup_spot" value="Platform ticket counter" />
+                            <label for="spot3">Platform ticket counter</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot4" name="pickup_spot" value="West Gate" />
-                            <label for="spot4">West Gate</label>
+                            <input type="radio" id="spot4" class="pickup_spot" value="Kempegowda bus stn. exit gate" />
+                            <label for="spot4">Kempegowda bus stn. exit gate </label>
+
                         </li>
                     </ul>
                 </div>
@@ -167,7 +170,7 @@
     <script src="/static/js/pages/index.js"></script>
     <script src="/static/js/jquery.tmpl.min.js"></script>
     <script src="/static/js/moment.js"></script>
-    <script src="/static/js/custom.js"></script>
+    <!--script src="/static/js/custom.js"></script-->
     <!--<script src="/static/webcam.js"></script>-->
     <script src="/static/sample_cam.js"></script>
     <script src="/static/js/base.js"></script>
@@ -256,6 +259,24 @@
     </div>
 </div>
 <% } %>
+</script>
+
+<script>
+$('#confirm_ride').click(function(e){
+	    e.preventDefault();
+	    $(".loading").css("display", "block");
+            var check_value = $('.pickup_spot:checked').val();
+            console.log(check_value);
+	    var url = '/api/latest/cab/booking';
+	    var params = {'destination': check_value}
+	    $.get(url, params).then(function(res){
+        	    $(".loading").hide();
+			    if(res.data && res.data.length != 0){
+                     window.open('/showconfirmation/' + res.data[0].crn, '_blank');
+			     } 
+	    });
+		                                 
+    });
 </script>
 
 </body>

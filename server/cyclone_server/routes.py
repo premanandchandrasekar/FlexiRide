@@ -19,10 +19,12 @@ routes = munge_route_list([
     URLSpec(r'/cam', views.SampleWebcamHandler, name="sample_cam"),
     URLSpec(r'/api/latest/camupload', api.CamUploadHandler),
     URLSpec(r'/api/latest/fetch/available/cabs', api.FetchAvailableCabs),
-    URLSpec(r'/showconfirmation', views.ShowConfirmationHandler, name="confirmation_message"),
+    URLSpec(r'/showconfirmation/([0-9]+)', views.ShowConfirmationHandler, name="confirmation_message"),
     URLSpec(r'/api/latest/cab/booking', api.CabBookingHandler),
     URLSpec(r'/show_bookedcabs_details', views.ShowBookedCabsDetails, name="booked_cabs"),
-    URLSpec(r'/api/latest/bookedcabsdetails', api.BookedCabsHandler)
+    URLSpec(r'/api/latest/bookedcabsdetails', api.BookedCabsHandler),
+    URLSpec(r'/api/latest/booked_cabs_crn', api.BookedCabsCrnHandler),
+    URLSpec(r'/api/latest/localtest', api.LocalTest)
 
 
 ])

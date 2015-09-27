@@ -18,6 +18,18 @@ socket.onmessage = function(message) {
     console.log('Socket_Connection_message', message.data);
 	var data = JSON.parse(message.data);
 	list_booked = data.bookedcabs_list;
+	if(data.inserted){
+		var inserted_detials = data.details;
+		var template = _.template($("#pending_details_template").html());
+				$("#pending_details").prepend(template({'driver_name': inserted_detials.driver_name,
+													'cab_number':inserted_detials.cab_number,
+													'driver_number':inserted_detials.driver_mobile_number,
+													'crn_id':'crn'+inserted_detials.crn,
+													'crn':inserted_detials.crn,
+													'crn':'arrived'+inserted_detials.crn,
+													'estimated_time':inserted_detials.estimated_time}));
+	}
+	else{
 	if(data.bookedcabs_list){
 		for(var i=0;i<data.bookedcabs_list.length;i++){
 			var crn_id = data.bookedcabs_list[i]['crn']
@@ -31,6 +43,7 @@ socket.onmessage = function(message) {
 			//$("#total_Organization").html("").append(data.org);
 		}
 	}
+}
     
 };
 
@@ -52,8 +65,11 @@ function show_booked_cabs(booked_cabs){
 		var template = _.template($("#pending_details_template").html());
 		for(var i=0;i<booked_cabs.length;i++){
 			$("#pending_details").append(template({'driver_name': booked_cabs[i].driver_name,
-													'cab_number':booked_cabs[i].cab_number,'driver_number':booked_cabs[i].driver_mobile_number,
-													'crn_id':'crn'+booked_cabs[i].crn,'crn':booked_cabs[i].crn,'estimated_time':booked_cabs[i].estimated_time}));
+													'cab_number':booked_cabs[i].cab_number,
+													'driver_number':booked_cabs[i].driver_mobile_number,
+													'crn_id':'crn'+booked_cabs[i].crn,
+													'crn':booked_cabs[i].crn,
+													'estimated_time':booked_cabs[i].estimated_time}));
 		}
 	}
 
