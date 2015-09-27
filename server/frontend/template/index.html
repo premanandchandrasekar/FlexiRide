@@ -34,119 +34,80 @@
 
                 <div class="or_text">OR</div>
 		<div class="qt_text">Enter Mobile number</div>
-                <input class="search_textbox" type="text" id="search_key" style="width: 39%;margin-left: 30%;border-radius: 5px 0 0 5px;"/>
+                <input class="search_textbox" type="text" id="search_key" style="width: 39%;margin-left: 30%;"/>
                 <button id="search_button" style="height: 35px;margin-left: -5px;border-radius: 0 5px 5px 0;" class="btn btn-warning"><i class="icon-search" style="opacity:0.5;"></i> Go</button>
                 <img class="loading" src="/static/bootstrap/img/spinner-mini.gif" style="margin:auto;margin-top:80px;" />
                 <div class="loading" style="color: #FFF;text-shadow: 0 0 5px #000;font-size: 24px;font-weight: 100;text-align: center;">Processing...</div>
             </div>
         </div>
-        <div style="margin-top: 400px;font-size: 36px;font-weight: 100;text-align: center;margin-bottom: 30px;">Evidence Dashboard</div>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header" data-original-title>
-                        <h2><i class="fa fa-list-alt"></i><span class="break"></span>Sentiment Distribution</h2>
-                    </div>
-                    <div class="box-content">
-                         <div id="sentimentchart" style="height: 300px;"></div>
-                    </div>
+        <div style="clear:both;margin-top:100px;"></div>
+        <div style="font-size: 36px;font-weight: 100;text-align: center;">BOOK YOUR CAB</div>
+        <div class="row" style="margin-top:50px;margin-bottom:100px;">
+            <div class="col-md-12">
+                <div style="margin-left:30%">
+                    <p style="font-size:18px;line-height:18px;">Select pick-up spot around majestic.</p>
+                    <ul class="pickup-spots">
+                        <li style="margin-left:0;">
+                            <input type="radio" id="spot1" name="pickup_spot" value="North Gate" />
+                            <label for="spot1">North Gate</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="spot2" name="pickup_spot" value="South Gate" />
+                            <label for="spot2">South Gate</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="spot3" name="pickup_spot" value="East Gate" />
+                            <label for="spot3">East Gate</label>
+                        </li>
+                        <li>
+                            <input type="radio" id="spot4" name="pickup_spot" value="West Gate" />
+                            <label for="spot4">West Gate</label>
+                        </li>
+                    </ul>
                 </div>
+                
             </div>
-            <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header" data-original-title>
-                        <h2><i class="fa fa-list-alt"></i><span class="break"></span>Twitter verified users</h2>
-                    </div>
-                    <div class="box-content">
-                         <div id="donutchart" style="height: 300px;"></div>
-                    </div>
-                </div>
+
+            <div class="col-md-12" style="margin-top:30px;">
+                <input class="destination" type="text" id="destination" placeholder="Pick a  destination...." style="margin-left: 30%;"/>
             </div>
-        </div>
-        <div class="row">    
-            <div class="col-lg-6">
-                <div class="box">
-                    <div class="box-header" data-original-title="">
-                        <h2><i class="fa fa-user"></i><span class="break"></span>Positive Tweets</h2>
-                    </div>
-                    <div class="box-content">
-                        <div class="graph">
-                            <div class="timeline" id="viewDiv7-top">
-                            </div>
+            
+            <div class="col-md-12" style="margin-top:50px;">
+                <div class="tabs" style="margin-left:25%;width:50%;">
+                    <ul class="tab-links">
+                        <li class="active"><a href="#tab1">Mini</a></li>
+                        <li><a href="#tab2">Sedan</a></li>
+                        <li><a href="#tab3">Prime</a></li>
+                    </ul>
+                 
+                    <div class="tab-content">
+                        <div id="tab1" class="tab active">
+                            <p>Tab #1 content goes here!</p>
+                            <p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis.</p>
+                        </div>
+                 
+                        <div id="tab2" class="tab">
+                            <p>Tab #2 content goes here!</p>
+                            <p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum risus ornare mollis. In hac habitasse platea dictumst. Ut euismod tempus hendrerit. Morbi ut adipiscing nisi. Etiam rutrum sodales gravida! Aliquam tellus orci, iaculis vel.</p>
+                        </div>
+                 
+                        <div id="tab3" class="tab">
+                            <p>Tab #3 content goes here!</p>
+                            <p>Donec pulvinar neque sed semper lacinia. Curabitur lacinia ullamcorper nibh; quis imperdiet velit eleifend ac. Donec blandit mauris eget aliquet lacinia! Donec pulvinar massa interdum ri.</p>
                         </div>
                     </div>
                 </div>
+                <!--ul class="car-type-list" style="list-style:none">
+                    <li class="col-md-4 cab_type"><img src="http://d1foexe15giopy.cloudfront.net/mini.png"> Mini</li>
+                    <li class="col-md-4 cab_type"><img src="http://d1foexe15giopy.cloudfront.net/mini.png"> Sedan</li>
+                    <li class="col-md-4 cab_type"><img src="http://d1foexe15giopy.cloudfront.net/mini.png"> Prime</li>
+                </ul-->
             </div>
-
-            <div class="col-lg-6">
-                <div class="box">
-                    <div class="box-header" data-original-title="">
-                        <h2><i class="fa fa-user"></i><span class="break"></span>Negative Tweets</h2>
-                    </div>
-                    <div class="box-content">
-                        <div class="graph">
-                            <div class="timeline" id="viewDiv7-bottom"></div>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-md-12" style="margin-top:30px;">
+                <div class="confirm-ride" id="confirm_ride">Confirm Ride</div>
             </div>
         </div>
-
-        <div class="row">    
-            <div class="col-lg-6">
-                <div class="box">
-                    <div class="box-header" data-original-title="">
-                        <h2><i class="fa fa-user"></i><span class="break"></span>User Details</h2>
-                    </div>
-                    <div class="box-content" id="viewDiv8">
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header" data-original-title>
-                        <h2><i class="fa fa-list-alt"></i><span class="break"></span>Top Users</h2>
-                    </div>
-                    <div class="box-content" id="viewDiv9" style="height:500px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">    
-            <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header" data-original-title="">
-                        <h2><i class="fa fa-user"></i><span class="break"></span>Top 10 hashtags</h2>
-                    </div>
-                    <div class="box-content">
-                        <table class="table table-bordered bootstrap-datatable datatable dataTable" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info">
-                            <thead>
-                                <tr role="row">
-						            <th role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Feature">
-						                Feature
-						            </th>
-						            <th role="columnheader" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Sentiment" style="width: 200px;">
-						                Occurrence
-						            </th>
-							    </tr>
-						    </thead>   
-								      
-					        <tbody id="viewDiv5" role="alert" aria-live="polite" aria-relevant="all">
-                            </tbody>
-                        </table>         
-					</div>
-				</div>
-			</div>
-            <div class="col-sm-6">
-                <div class="box">
-                    <div class="box-header" data-original-title>
-                        <h2><i class="fa fa-list-alt"></i><span class="break"></span>Most Important tweets</h2>
-                    </div>
-                    <div class="box-content" id="viewDiv0"></div>
-                </div>
-            </div>
-        </div>
+        <div class="row footer"></div>
 
     </div>
 
@@ -171,12 +132,9 @@
     <script src="/static/js/jquery.tmpl.min.js"></script>
     <script src="/static/js/moment.js"></script>
     <script src="/static/js/custom.js"></script>
-<<<<<<< HEAD
     <script src="/static/webcam.js"></script>
     <script src="/static/sample_cam.js"></script>
-=======
     <script src="/static/js/base.js"></script>
->>>>>>> 9ad6c25ee20322e53589e26abe55c84ea73d5e65
 
 <script type="text/template" id="viewItem7">
 <div class="timeslot <%-className%> <%-type%>" style="height:<%-text.length * 0.5%>px;">
