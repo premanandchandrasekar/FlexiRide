@@ -78,3 +78,4 @@ class FetchAvailableCabs(APIBase):
         success = True
         defer.returnValue(self.write_json({'success':success, "data":jsondata}))
 
+

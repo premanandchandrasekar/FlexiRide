@@ -19,5 +19,6 @@ routes = munge_route_list([
     URLSpec(r'/cam', views.SampleWebcamHandler, name="sample_cam"),
     URLSpec(r'/api/latest/camupload', api.CamUploadHandler),
     URLSpec(r'/api/latest/fetch/available/cabs', api.FetchAvailableCabs),
-    URLSpec(r'/location', views.SampleLocationHandler, name="sample_loc")
+    URLSpec(r'/location', views.SampleLocationHandler, name="sample_loc"),
+    URLSpec(r'/api/latest/fetch/available/showconfirmation', views.ShowConfirmationHandler)
 ])

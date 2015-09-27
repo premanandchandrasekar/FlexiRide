@@ -24,3 +24,8 @@ class SampleLocationHandler(cyclone.web.RequestHandler):
 
     def get(self):
         self.render("dropdown.html")
+
+class ShowConfirmationHandler(cyclone.web.RequestHandler):
+
+    def get(self):
+        self.render("confirmation.html")
