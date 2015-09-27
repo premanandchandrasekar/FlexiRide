@@ -42,6 +42,9 @@ $(document).ready(function(){
         }
         $("html, body").animate({ scrollTop: $('#booking_header').offset().top }, 1000);
     });
+
+    $("#homescreen").css("min-height", window.innerHeight);
+
 });
 
 
