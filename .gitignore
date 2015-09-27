@@ -1,31 +1,49 @@
-*.py[co]
-pip-log.txt
+*.py[cod]
 .DS_Store
 *.swp
 *.swo
-*.pyc
-dropin.cache
-server/uploads/*
-server/temp/*
-server/audio/*
-server/frontend/static/build/*
 twistd.pid
-.vagrant
-_trial_temp*
-*~
-server/cyclone_server/build/pip-delete-this-directory.txt
-*.swo
-*.log
-*.lock
-*.zip
 *.rdb
-*.*~
+*.log
 docs/db/schema.sql~
 .idea*
-server/audio/*
-server/_build/*
 tmp.*
-server/tests/test_data/*
 *._.DS_Store
+
+# C extensions
+*.so
+
+# Packages
+*.egg
+*.egg-info
+dist
+build
+eggs
+parts
+bin
+var
+sdist
+develop-eggs
+.installed.cfg
+lib64
+__pycache__
+
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
 .project
 .pydevproject
+*.prefs
+
+# Temporary files
+*.*~
