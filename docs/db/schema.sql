@@ -38,3 +38,6 @@ CREATE TABLE UserDetails(
     estimated_amount       REAL NOT NULL,
     created_on             TIMESTAMP DEFAULT utc_now()
 );
+
+ALTER TABLE cabsbooked drop COLUMN estimated_time;
+ALTER TABLE cabsbooked add COLUMN estimated_time INTEGER;
