@@ -240,3 +240,28 @@ background:#000;
   padding-left: 5px;
   padding-right: 2px;
 }
+
+.lf_text{
+    /* text-shadow: 0 0 6px rgb(0,0,0); */
+    /* width: auto; */
+    margin: 20px;
+
+    font-size: 24px;
+    color: #000;
+    margin-top: 10px;
+    /* margin-bottom: 15px; */
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.rf_text{
+    /* text-shadow: 0 0 6px rgb(0,0,0); */
+    /* width: auto; */
+    margin: 20px;
+    font-size: 24px;
+    color: #050;
+    margin-top: 10px;
+    /* margin-bottom: 15px; */
+    font-weight: 100;
+    font-family: 'Open Sans', sans-serif;
+}
