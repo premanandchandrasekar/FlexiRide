@@ -5,6 +5,7 @@ from twisted.internet import defer
 from cyclone_server import utils
 from cyclone_server.utils import BaseHandler
 from cyclone_server.db.mixin import DatabaseMixin
+from cyclone_server.api import CabBookingHandler
 
 class IndexHandler(BaseHandler, DatabaseMixin):
     is_index_handler = True
@@ -27,5 +28,5 @@ class ShowBookedCabsDetails(cyclone.web.RequestHandler):
 
 class ShowConfirmationHandler(cyclone.web.RequestHandler):
 
-    def get(self):
-        self.render("confirmation.html")
+    def get(self, crn_id):
+        self.render("confirmation.html",crn_id=crn_id)

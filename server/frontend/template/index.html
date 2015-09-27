@@ -49,23 +49,25 @@
         <div class="row" style="margin-top:50px;margin-bottom:100px;">
             <div class="col-md-12" id="ps_container">
                 <div style="margin-left:30%">
-                    <p style="font-size:18px;line-height:18px;">Pick-up spots at - Sony World, 100 Feet Road, Koramangala.</p>
+                    <p style="font-size:18px;line-height:18px;">Pick-up spots at - Majestic railway station</p>
                     <ul class="pickup-spots">
-                        <li style="margin-left:0;" id="pickup_spot" data-lat="12.93707" data-long="77.62660499999993">
-                            <input type="radio" id="spot1" name="pickup_spot" value="North Gate" />
-                            <label for="spot1">Wild craft</label>
+
+                        <li style="margin-left:0;">
+                            <input type="radio" id="spot1" class="pickup_spot" value="SBI Atm" />
+                            <label for="spot1">SBI Atm </label>
                         </li>
                         <li>
-                            <input type="radio" id="spot2" name="pickup_spot" value="South Gate" />
-                            <label for="spot2">Oasis</label>
+                            <input type="radio" id="spot2" class="pickup_spot" value="Two wheeler parking area" />
+                            <label for="spot2">Two wheeler parking area</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot3" name="pickup_spot" value="East Gate" />
-                            <label for="spot3">Taco Bells</label>
+                            <input type="radio" id="spot3" class="pickup_spot" value="Platform ticket counter" />
+                            <label for="spot3">Platform ticket counter</label>
                         </li>
                         <li>
-                            <input type="radio" id="spot4" name="pickup_spot" value="West Gate" />
-                            <label for="spot4">New Fonotech</label>
+                            <input type="radio" id="spot4" class="pickup_spot" value="Kempegowda bus stn. exit gate" />
+                            <label for="spot4">Kempegowda bus stn. exit gate </label>
+
                         </li>
                     </ul>
                 </div>
@@ -86,11 +88,51 @@
                  
                     <div class="tab-content">
                         <div id="Mini" class="tab active">
-                            <p>No Cabs Available in this Category.</p>
+                            <table class="table table-hover">
+                              <tbody id="cabDetailsTableMini">
+                                <tr>
+                                    <td style="width:30px;">
+                                        Distance To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Time To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Amount
+                                    </td>
+                                    <td>
+                                        Total Travel Distance
+                                    </td>
+                                    <td>
+                                        Total Travel Time
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
                         </div>
                  
                         <div id="Sedan" class="tab">
-                            <p>No Cabs Available in this Category.</p>
+                            <table class="table table-hover">
+                              <tbody id="cabDetailsTableSedan">
+                                <tr>
+                                    <td style="width:30px;">
+                                        Distance To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Time To Arrive
+                                    </td>
+                                    <td>
+                                        Estimated Amount
+                                    </td>
+                                    <td>
+                                        Total Travel Distance
+                                    </td>
+                                    <td>
+                                        Total Travel Time
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
                         </div>
                  
                         <div id="Prime" class="tab">
@@ -163,6 +205,30 @@
 </tr>
 </script>
 
+<script type="text/template" id="cabDetails">
+    <%for(var i=0;i<cabDetails.categories.length; i++) {{'{'}} var d=cabDetails;%> 
+      <% if(d['categories'][i]['display_name'] == filter){{'{'}}%>
+        <tr>
+            <td style="width:30px;">
+                <% if(d['categories'][i]['distance'] == -1){{'{'}}%>2<%} else {{'{'}}%><%-d['categories'][i]['distance']%> Kilometers<%}%>
+            </td>
+            <td>
+              <% if(d['categories'][i]['eta'] == -1){{'{'}}%>2<%} else {{'{'}}%><%-d['categories'][i]['eta']%> Minute(s)<%}%>
+            </td>
+            <td>
+                <%-d['ride_estimate'][i]['amount_max']%> Rupees
+            </td>
+            <td>
+                <%-d['ride_estimate'][i]['distance']%> Kilometers
+            </td>
+            <td>
+                <%-d['ride_estimate'][i]['travel_time_in_minutes']%> Minute(s)
+            </td>
+        </tr>
+      <% } %>
+    <% } %>
+</script>
+
 <script type="text/template" id="viewItem8">
 <div class="v8div">
     <div>
@@ -197,6 +263,24 @@
     </div>
 </div>
 <% } %>
+</script>
+
+<script>
+$('#confirm_ride').click(function(e){
+	    e.preventDefault();
+	    $(".loading").css("display", "block");
+            var check_value = $('.pickup_spot:checked').val();
+            console.log(check_value);
+	    var url = '/api/latest/cab/booking';
+	    var params = {'destination': check_value}
+	    $.get(url, params).then(function(res){
+        	    $(".loading").hide();
+			    if(res.data && res.data.length != 0){
+                     window.open('/showconfirmation/' + res.data[0].crn, '_blank');
+			     } 
+	    });
+		                                 
+    });
 </script>
 
 </body>

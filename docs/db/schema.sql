@@ -41,3 +41,5 @@ CREATE TABLE UserDetails(
 
 ALTER TABLE cabsbooked drop COLUMN estimated_time;
 ALTER TABLE cabsbooked add COLUMN estimated_time INTEGER;
+ALTER TABLE cabsbooked add COLUMN crn INTEGER;
+

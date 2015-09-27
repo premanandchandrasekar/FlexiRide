@@ -35,12 +35,12 @@ class PostgresDatabase(object):
 
 
     def insert_into_bookedcabs(self, driver_name, cab_number, driver_mobile_number,
-    			sharing, device_id, estimated_amount, estimated_time):
+    			sharing, device_id, estimated_amount, estimated_time, crn):
 
         return self.connection.runOperation(
             query._INSERT_BOOKED_CAB,
             (driver_name, cab_number, driver_mobile_number,
-                sharing, device_id, estimated_amount, estimated_time)).\
+                sharing, device_id, estimated_amount, estimated_time, crn)).\
             addCallback(self._got_booked_details).\
             addErrback(self._db_error)
 
@@ -94,6 +94,12 @@ class PostgresDatabase(object):
                           'created_on':row.created_on,
                           'crn':row.crn})
     	return l
+
+    def get_booked_status_by_crn(self,crn):
+        return self.connection.runQuery(
+            query._GET_BOOKED_DETAILS_BY_CRN, (crn,)).\
+            addCallback(self._got_booked_details).\
+            addErrback(self._db_error)
 
     
 

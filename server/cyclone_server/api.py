@@ -78,7 +78,7 @@ class FetchAvailableCabs(APIBase):
             request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
         print request_url
         if drop_lat and drop_lng:
-            request_url += '?drop_lat=' + drop_lat + '&drop_lng=' + drop_lng
+            request_url += '&drop_lat=' + drop_lat + '&drop_lng=' + drop_lng
         response = yield httpclient.fetch(request_url,
                        method='GET', headers=headers, postdata=None)
         print response
@@ -98,17 +98,17 @@ class CabBookingHandler(APIBase):
         request_url = api_url + "/bookings/create"
         pickup_lat = self.get_argument('pickup_lat', None)
         pickup_lng = self.get_argument('pickup_lng', None)
-        mob_no_or_pan_no = self.get_argument("user_id")
+        mob_no_or_pan_no = self.get_argument("user_id", None)
         sharing = self.get_argument("sharing", False)
         share_with = self.get_argument('share_with', None)
         pickup_location = self.get_argument('pickup_location', None)
         destination = self.get_argument('destination', None)
-        estimated_amount = self.get_argument('estimated_amount')
+        estimated_amount = self.get_argument('estimated_amount', None)
         share_estimated_amount = self.get_argument('share_estimated_amount', estimated_amount)        
         if not share_with:
             if pickup_lat and pickup_lng:
                 request_url += '?pickup_lat=' + pickup_lat + '&pickup_lng=' + pickup_lng
-            request_url += '&pickup_mode=' + NOW
+            request_url += '&pickup_mode=' + 'NOW'
             response = yield httpclient.fetch(request_url,
                            method='GET', headers=headersWithAuth, postdata=None)
             print response
@@ -117,7 +117,7 @@ class CabBookingHandler(APIBase):
                 success = True
                 inserted_details = yield self.database.insert_into_bookedcabs(jsondata['driver_name'],
                     jsondata['cab_number'], jsondata['driver_number'], sharing,
-                    1, estimated_amount, jsondata['eta'])
+                    1, estimated_amount, jsondata['eta'],jsondata['crn'])
                 if inserted_details:
                     json_response = json.dumps({'details':inserted_details , 'inserted': True})
                     redis_client.publish('ridestream', json_response)
@@ -125,11 +125,10 @@ class CabBookingHandler(APIBase):
                 jsondata = []
                 success = False
         else:
-            yield self.database.insert_into_userdetails(share_with, user_id, pickup_location,
+            yield self.database.insert_into_userdetails(share_with, pickup_location,
                 destination, share_estimated_amount)
             jsondata = yield self.database.fetch_bookedcabs_by_id(share_with)
             success = True
-        jsondata['user_id'] = user_id
         defer.returnValue(self.write_json({'success':success, "data":jsondata}))
 
 class BookedCabsHandler(APIBase):
@@ -139,6 +138,17 @@ class BookedCabsHandler(APIBase):
         booked_cabs = yield self.database.get_all_booked_cabs()
         print booked_cabs
         defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
+
+class BookedCabsCrnHandler(APIBase):
+
+    @defer.inlineCallbacks
+    def get(self):
+        crn = self.get_argument('crn', None)
+        booked_details_by_crn = yield self.database.get_booked_status_by_crn(crn)
+        if booked_details_by_crn:
+            defer.returnValue(self.write_json({'success': True, 'booked_detail': booked_details_by_crn}))
+        defer.returnValue(self.write_json({'success': False}))
+
 
 class LocalTest(APIBase):
 

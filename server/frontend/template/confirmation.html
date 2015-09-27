@@ -19,7 +19,11 @@
   </head>
 
   <body>
-
+        <script type="text/javascript">
+            {% if crn_id %}
+                window.crn_id = "{{ crn_id }}";
+            {% end %}
+        </script
     <div class="container">
         <div class="row box">
             <div class="col-md-12" style="margin-top:0px; background-color:#3b3b41;border: 1px solid #f1f1f1;padding-bottom: 14px;">
@@ -27,10 +31,6 @@
             <div>
 
             <div class="col-md-12" style="margin-top:0px; background-color:#fff;border: 0.1px solid #f1f1f1;">
-		<div class="col-md-12">
-                   <div class="col-md-4 lf_text">User          : </div>
-                   <div class="col-md-6 rf_text" id="user"></div>
-                </div>
                 <div class="col-md-12">
                    <div class="col-md-4 lf_text">Driver Name   :</div>
                    <div class="col-md-6 rf_text" id="driver_name"></div>
@@ -42,10 +42,6 @@
                 <div class="col-md-12">
                    <div class="col-md-4 lf_text">Car number    :</div>
                    <div class="col-md-6 rf_text" id="car_number"></div>
-                </div>
-                <div class="col-md-12">
-                   <div class="col-md-4 lf_text">Status        :</div>
-                   <div class="col-md-6 rf_text" id="status"></div>
                 </div>
                 <div class="col-md-12">
                    <div class="col-md-4 lf_text">Estimated Time:</div>
@@ -71,7 +67,25 @@
     <script src="/static/js/custom.min.js"></script>
     <script src="/static/js/custom.js"></script>
     <script src="/static/js/base.js"></script>
-
+    <script>
+          if(window.crn_id){
+          var url = '/api/latest/booked_cabs_crn';
+          var params = {'crn': window.crn_id}
+          $.get(url, params).then(function(res){
+                  $(".loading").hide();
+              if(res.success){
+                  console.log(res);
+                  var detail = res.booked_detail
+                  $("#driver_name").html(detail.driver_name);
+                  $("#driver_number").html(detail.driver_mobile_number);
+                  $("#car_number").html(detail.cab_number);
+                  $("#estimated_time").html(detail.estimated_time); 
+                  $("#estimates_fair").html(detail.estimated_amount);
+                         //window.open('/showconfirmation/' + res.data[0].crn, '_blank');
+               } 
+          });
+        }
+    </script>
 
 
 
