@@ -117,7 +117,7 @@ class CabBookingHandler(APIBase):
                 success = True
                 inserted_details = yield self.database.insert_into_bookedcabs(jsondata['driver_name'],
                     jsondata['cab_number'], jsondata['driver_number'], sharing,
-                    1, estimated_amount, jsondata['eta'])
+                    1, estimated_amount, jsondata['eta'],jsondata['crn'])
                 if inserted_details:
                     json_response = json.dumps({'details':inserted_details , 'inserted': True})
                     redis_client.publish('ridestream', json_response)
@@ -139,6 +139,17 @@ class BookedCabsHandler(APIBase):
         booked_cabs = yield self.database.get_all_booked_cabs()
         print booked_cabs
         defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
+
+class BookedCabsCrnHandler(APIBase):
+
+    @defer.inlineCallbacks
+    def get(self):
+        crn = self.get_argument('crn', None)
+        booked_details_by_crn = yield self.database.get_booked_status_by_crn(crn)
+        if booked_details_by_crn:
+            defer.returnValue(self.write_json({'success': True, 'booked_cabs_lists': booked_cabs}))
+        defer.returnValue(self.write_json({'success': False}))
+
 
 class LocalTest(APIBase):
 
